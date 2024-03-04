@@ -7,6 +7,7 @@ import 'package:my_library/signup.dart';
 import 'HomePage.dart';
 import 'package:my_library/TableBooking.dart' as TableBookingPage;
 
+// import 'TableBookingTest.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -40,7 +41,7 @@ class MyApp extends StatelessWidget {
         '/signup': (context) => SignUpPage(),
         '/login': (context) => LoginPage(),
         '/booking': (context) => TableBookingPage.TableBookingPage(),
-        '/admin': (context) => const AdminPage(),
+        '/admin': (context) => AdminTablePage(),
         '/home': (context) {
           final Map<String, String>? args =
           ModalRoute.of(context)!.settings.arguments as Map<String, String>?;
@@ -51,6 +52,7 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
 
 class LoginPage extends StatefulWidget {
   @override

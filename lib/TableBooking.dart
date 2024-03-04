@@ -8,6 +8,7 @@ class TableBookingPage extends StatefulWidget {
 
 class _TableBookingPageState extends State<TableBookingPage> {
   List<int> bookedTables = [];
+  int selectedTable = -1;
 
   @override
   void initState() {
@@ -31,15 +32,72 @@ class _TableBookingPageState extends State<TableBookingPage> {
     }
   }
 
-  Future<void> updateTableStatus(int tableNo, bool isBooked) async {
-    try {
-      await FirebaseFirestore.instance
-          .collection('tables')
-          .doc('table$tableNo')
-          .update({'isBooked': isBooked});
-    } catch (error) {
-      print('Error updating table status: $error');
-    }
+  Future<void> bookTable(int tableNumber) async {
+    // Show dialog to input user details
+    await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        String name = '';
+        String village = '';
+        String phoneNumber = '';
+
+        return AlertDialog(
+          title: Text('Enter Your Details'),
+          content: SingleChildScrollView(
+            child: Column(
+              children: [
+                TextFormField(
+                  decoration: InputDecoration(labelText: 'Name'),
+                  onChanged: (value) {
+                    name = value;
+                  },
+                ),
+                TextFormField(
+                  decoration: InputDecoration(labelText: 'Village'),
+                  onChanged: (value) {
+                    village = value;
+                  },
+                ),
+                TextFormField(
+                  decoration: InputDecoration(labelText: 'Phone Number'),
+                  onChanged: (value) {
+                    phoneNumber = value;
+                  },
+                ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () async {
+                // Add booking details to database for admin approval
+                await FirebaseFirestore.instance.collection('bookings').add({
+                  'tableNumber': tableNumber,
+                  'name': name,
+                  'village': village,
+                  'phoneNumber': phoneNumber,
+                  'isApproved': false, // Initially not approved
+                });
+
+                Navigator.of(context).pop();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('Booking request sent for approval.'),
+                  ),
+                );
+              },
+              child: Text('Submit'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -61,10 +119,12 @@ class _TableBookingPageState extends State<TableBookingPage> {
           87,
               (index) => GestureDetector(
             onTap: () {
-              int tableNo = index + 1;
-              bool isBooked = !bookedTables.contains(tableNo);
-              updateTableStatus(tableNo, isBooked);
-              fetchBookedTables(); // Refresh booked tables
+              setState(() {
+                if (!bookedTables.contains(index + 1)) {
+                  selectedTable = index + 1;
+                  bookTable(selectedTable);
+                }
+              });
             },
             child: Container(
               margin: EdgeInsets.all(10.0),
@@ -72,6 +132,8 @@ class _TableBookingPageState extends State<TableBookingPage> {
                 borderRadius: BorderRadius.circular(10.0),
                 color: bookedTables.contains(index + 1)
                     ? Colors.grey
+                    : selectedTable == index + 1
+                    ? Colors.lightGreen.withOpacity(0.7)
                     : Colors.green.withOpacity(0.3),
               ),
               child: Center(
@@ -81,6 +143,8 @@ class _TableBookingPageState extends State<TableBookingPage> {
                     fontSize: 16.0,
                     fontWeight: FontWeight.bold,
                     color: bookedTables.contains(index + 1)
+                        ? Colors.white
+                        : selectedTable == index + 1
                         ? Colors.white
                         : Colors.black,
                   ),

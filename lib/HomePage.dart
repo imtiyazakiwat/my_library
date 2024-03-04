@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'AdminApprovalPage.dart'; // Import the AdminApprovalPage
 
 class HomePage extends StatelessWidget {
   final String userEmail;
@@ -8,7 +9,6 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('User Email: $userEmail'); // Print the user's email
     return Scaffold(
       appBar: AppBar(
         title: Text('Sharada Library'),
@@ -80,21 +80,44 @@ class HomePage extends StatelessWidget {
                 ),
                 SizedBox(height: 20.0),
                 // Conditional rendering for admin
-                if (userEmail == 'libraryadmin@gmail.com')
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.pushReplacementNamed(context, '/admin');
-                    },
-                    child: Text(
-                      'View/Update Table Info',
-                      style: TextStyle(fontSize: 18.0),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30.0),
+                if (_isAdmin(userEmail))
+                  Column(
+                    children: [
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.pushReplacementNamed(context, '/admin');
+                        },
+                        child: Text(
+                          'View/Update Table Info',
+                          style: TextStyle(fontSize: 18.0),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30.0),
+                          ),
+                        ),
                       ),
-                    ),
+                      SizedBox(height: 20.0),
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => AdminApprovalPage()),
+                          );
+                        },
+                        child: Text(
+                          'Approve/Decline Requests',
+                          style: TextStyle(fontSize: 18.0),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30.0),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
               ],
             ),
@@ -104,17 +127,33 @@ class HomePage extends StatelessWidget {
     );
   }
 
+  // Function to handle logout
   void _logout(BuildContext context) async {
     try {
       // Sign out the user from Firebase Authentication
       await FirebaseAuth.instance.signOut();
 
-      // Navigate to the login page
-      Navigator.pushReplacementNamed(context, '/login');
+      // Close the current screen and return to the login screen
+      Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
     } catch (e) {
       print("Error logging out: $e");
       // Handle any errors that occur during logout
     }
   }
 
+  // Function to check if the user is an admin
+  bool _isAdmin(String email) {
+    // Check if the email matches the admin email
+    if (email == 'libraryadmin@gmail.com') {
+      return true;
+    }
+
+    // Check if the current user is signed in with Firebase
+    final currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser != null && currentUser.email == 'libraryadmin@gmail.com') {
+      return true;
+    }
+
+    return false;
+  }
 }

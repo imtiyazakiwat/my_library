@@ -30,6 +30,8 @@ dependencies:
   firebase_database: ^10.4.7 # Add this line for firebase_database
   cloud_firestore: ^4.15.6
   shared_preferences: ^2.2.2
+  hive: ^2.0.4
+  hive_flutter: ^1.1.0
 
 
 
