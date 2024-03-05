@@ -3,10 +3,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AdminTablePage extends StatefulWidget {
   @override
-  _AddTablePageState createState() => _AddTablePageState();
+  _AdminTablePageState createState() => _AdminTablePageState();
 }
 
-class _AddTablePageState extends State<AdminTablePage> {
+class _AdminTablePageState extends State<AdminTablePage> {
   final CollectionReference tables =
   FirebaseFirestore.instance.collection('tables');
 
@@ -15,6 +15,7 @@ class _AddTablePageState extends State<AdminTablePage> {
   String name = '';
   String village = '';
   String mobileNo = '';
+  DateTime? selectedDate;
 
   TextEditingController nameController = TextEditingController();
   TextEditingController villageController = TextEditingController();
@@ -37,18 +38,25 @@ class _AddTablePageState extends State<AdminTablePage> {
   }
 
   void _fetchTableData(int tableNo) {
-    tables.where('tableNo', isEqualTo: tableNo).get().then((querySnapshot) {
-      if (querySnapshot.docs.isNotEmpty) {
-        var data = querySnapshot.docs.first.data() as Map<String, dynamic>;
+    tables.doc('table_$tableNo').get().then((doc) {
+      if (doc.exists) {
+        var data = doc.data() as Map<String, dynamic>;
         setState(() {
-          isBooked = data['isBooked'];
+          isBooked = data.containsKey('isBooked') ? data['isBooked'] : false;
           if (isBooked) {
-            name = data['name'];
-            village = data['village'];
-            mobileNo = data['mobileNo'];
+            name = data.containsKey('name') ? data['name'] : '';
+            village = data.containsKey('village') ? data['village'] : '';
+            mobileNo = data.containsKey('mobileNo') ? data['mobileNo'] : '';
             nameController.text = name;
             villageController.text = village;
             mobileNoController.text = mobileNo;
+          } else {
+            name = '';
+            village = '';
+            mobileNo = '';
+            nameController.clear();
+            villageController.clear();
+            mobileNoController.clear();
           }
         });
       } else {
@@ -78,12 +86,13 @@ class _AddTablePageState extends State<AdminTablePage> {
       _isLoading = true; // Show loading indicator
     });
 
-    tables.doc(selectedTable.toString()).set({
+    tables.doc('table_$selectedTable').set({
       'tableNo': selectedTable,
       'isBooked': isBooked,
-      if (isBooked) 'name': nameController.text,
-      if (isBooked) 'village': villageController.text,
-      if (isBooked) 'mobileNo': mobileNoController.text,
+      'name': isBooked ? nameController.text : '',
+      'village': isBooked ? villageController.text : '',
+      'mobileNo': isBooked ? mobileNoController.text : '',
+      'selectedDate': selectedDate != null ? selectedDate!.toIso8601String() : null,
     }).then((_) {
       setState(() {
         _isLoading = false; // Hide loading indicator
@@ -118,10 +127,19 @@ class _AddTablePageState extends State<AdminTablePage> {
     );
   }
 
-  void _goToHome() {
-    // Navigate back to home page
-      Navigator.pushReplacementNamed(context, '/home');
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime.now(),
+      lastDate: DateTime(2101),
+    );
 
+    if (pickedDate != null && pickedDate != selectedDate) {
+      setState(() {
+        selectedDate = pickedDate;
+      });
+    }
   }
 
   @override
@@ -213,11 +231,21 @@ class _AddTablePageState extends State<AdminTablePage> {
                   });
                 },
               ),
+              SizedBox(height: 10),
+              ElevatedButton(
+                onPressed: () => _selectDate(context),
+                child: Text(selectedDate != null ? 'Selected Date: ${selectedDate.toString()}' : 'Select Date'),
+              ),
               SizedBox(height: 20),
             ],
           ],
         ),
       );
     }
+  }
+
+  void _goToHome() {
+    // Navigate back to home page
+    Navigator.pushReplacementNamed(context, '/home');
   }
 }

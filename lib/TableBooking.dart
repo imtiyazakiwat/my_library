@@ -23,7 +23,9 @@ class _TableBookingPageState extends State<TableBookingPage> {
 
       setState(() {
         bookedTables = querySnapshot.docs
-            .where((doc) => doc['isBooked'] == true)
+            .where((doc) => (doc.data() as Map<String, dynamic>).containsKey('isBooked') &&
+            doc['isBooked'] == true &&
+            (doc.data() as Map<String, dynamic>).containsKey('tableNo'))
             .map((doc) => doc['tableNo'] as int)
             .toList();
       });
@@ -32,7 +34,7 @@ class _TableBookingPageState extends State<TableBookingPage> {
     }
   }
 
-  Future<void> bookTable(int tableNumber) async {
+  Future<void> bookTable(int tableNo) async {
     // Show dialog to input user details
     await showDialog(
       context: context,
@@ -78,7 +80,7 @@ class _TableBookingPageState extends State<TableBookingPage> {
               onPressed: () async {
                 // Add booking details to database for admin approval
                 await FirebaseFirestore.instance.collection('bookings').add({
-                  'tableNumber': tableNumber,
+                  'tableNo': tableNo,
                   'name': name,
                   'village': village,
                   'phoneNumber': phoneNumber,

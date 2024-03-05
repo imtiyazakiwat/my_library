@@ -33,7 +33,7 @@ class _AdminApprovalPageState extends State<AdminApprovalPage> {
             itemBuilder: (context, index) {
               var booking = snapshot.data!.docs[index];
               return ListTile(
-                title: Text('Table ${booking['tableNumber']}'),
+                title: Text('Table ${booking['tableNo']}'),
                 subtitle: Text('${booking['name']} - ${booking['village']}'),
                 trailing: Row(
                   mainAxisSize: MainAxisSize.min,
@@ -41,7 +41,7 @@ class _AdminApprovalPageState extends State<AdminApprovalPage> {
                     IconButton(
                       icon: Icon(Icons.check),
                       onPressed: () {
-                        approveBooking(booking.id, booking['tableNumber']);
+                        approveBooking(booking.id, booking['tableNo'], booking['name'], booking['village'], booking['phoneNumber']);
                       },
                     ),
                     IconButton(
@@ -60,16 +60,43 @@ class _AdminApprovalPageState extends State<AdminApprovalPage> {
     );
   }
 
-  void approveBooking(String bookingId, int tableNumber) async {
+  void approveBooking(String bookingId, int tableNo, String name, String village, String phoneNumber) async {
     try {
       // Update the booking status to approved
       await FirebaseFirestore.instance.collection('bookings').doc(bookingId).update({'isApproved': true});
 
-      // Mark the table as booked in the 'tables' collection
-      await FirebaseFirestore.instance.collection('tables').doc('table_$tableNumber').set({
-        'tableNo': tableNumber,
-        'isBooked': true,
-        // Add additional fields if needed
+      // Create the document if it doesn't exist
+      final tableDoc = FirebaseFirestore.instance.collection('tables').doc('table_$tableNo');
+      final tableSnapshot = await tableDoc.get();
+
+      if (!tableSnapshot.exists) {
+        // Document doesn't exist, create it
+        await tableDoc.set({
+          'tableNo': tableNo,
+          'isBooked': true,
+          'name': name,
+          'mobileNo': phoneNumber,
+          'village': village,
+        });
+      } else {
+        // Document exists, update it
+        await tableDoc.update({
+          'tableNo': tableNo,
+          'isBooked': true,
+          'name': name,
+          'phoneNumber': phoneNumber,
+          'village': village,
+        });
+      }
+
+      // Add booking details to the 'approved_bookings' collection
+      await FirebaseFirestore.instance.collection('approved_bookings').add({
+        'tableNo': tableNo,
+        'name': name,
+        'village': village,
+        'phoneNumber': phoneNumber,
+        'isApproved': true,
+        'approvalDate': DateTime.now(),
       });
 
       ScaffoldMessenger.of(context).showSnackBar(

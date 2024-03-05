@@ -150,9 +150,10 @@ class HomePage extends StatelessWidget {
 
     // Check if the current user is signed in with Firebase
     final currentUser = FirebaseAuth.instance.currentUser;
-    if (currentUser != null && currentUser.email == 'libraryadmin@gmail.com') {
+    if (currentUser != null && (currentUser.email == 'libraryadmin@gmail.com' || currentUser.email == 'ghorpadesudheer@gmail.com')) {
       return true;
     }
+
 
     return false;
   }
