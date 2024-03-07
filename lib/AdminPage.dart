@@ -147,7 +147,10 @@ class _AdminTablePageState extends State<AdminTablePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Edit Tables Info'),
-        automaticallyImplyLeading: false, // Remove back arrow
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: _goToHome,
+        ),
       ),
       body: _buildBody(),
       floatingActionButton: FloatingActionButton.extended(
@@ -239,5 +242,10 @@ class _AdminTablePageState extends State<AdminTablePage> {
         ),
       );
     }
+  }
+
+  void _goToHome() {
+    // Navigate back to home page
+    Navigator.pushReplacementNamed(context, '/home');
   }
 }
