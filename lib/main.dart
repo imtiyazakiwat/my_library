@@ -6,8 +6,6 @@ import 'package:my_library/AdminPage.dart';
 import 'package:my_library/signup.dart';
 import 'HomePage.dart';
 import 'package:my_library/TableBooking.dart' as TableBookingPage;
-
-// import 'TableBookingTest.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -52,7 +50,6 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
 
 class LoginPage extends StatefulWidget {
   @override
@@ -115,7 +112,7 @@ class _LoginPageState extends State<LoginPage> {
                   _signInWithEmailAndPassword(context);
                 },
                 style: ElevatedButton.styleFrom(
-                  primary: Colors.blue,
+                  backgroundColor: Colors.blue,
                   padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30),
