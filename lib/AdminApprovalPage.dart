@@ -41,7 +41,7 @@ class _AdminApprovalPageState extends State<AdminApprovalPage> {
                     IconButton(
                       icon: Icon(Icons.check),
                       onPressed: () {
-                        approveBooking(booking.id, booking['tableNo'], booking['name'], booking['village'], booking['phoneNumber']);
+                        approveBooking(booking.id, booking['tableNo'], booking['name'], booking['village'], booking['mobileNo']);
                       },
                     ),
                     IconButton(
@@ -60,7 +60,7 @@ class _AdminApprovalPageState extends State<AdminApprovalPage> {
     );
   }
 
-  void approveBooking(String bookingId, int tableNo, String name, String village, String phoneNumber) async {
+  void approveBooking(String bookingId, int tableNo, String name, String village, String mobileNo) async {
     try {
       // Update the booking status to approved
       await FirebaseFirestore.instance.collection('bookings').doc(bookingId).update({'isApproved': true});
@@ -75,7 +75,7 @@ class _AdminApprovalPageState extends State<AdminApprovalPage> {
           'tableNo': tableNo,
           'isBooked': true,
           'name': name,
-          'mobileNo': phoneNumber,
+          'mobileNo': mobileNo,
           'village': village,
         });
       } else {
@@ -84,7 +84,7 @@ class _AdminApprovalPageState extends State<AdminApprovalPage> {
           'tableNo': tableNo,
           'isBooked': true,
           'name': name,
-          'phoneNumber': phoneNumber,
+          'mobileNo': mobileNo,
           'village': village,
         });
       }
@@ -94,7 +94,7 @@ class _AdminApprovalPageState extends State<AdminApprovalPage> {
         'tableNo': tableNo,
         'name': name,
         'village': village,
-        'phoneNumber': phoneNumber,
+        'mobileNo': mobileNo,
         'isApproved': true,
         'approvalDate': DateTime.now(),
       });

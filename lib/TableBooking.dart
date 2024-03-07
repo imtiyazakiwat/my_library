@@ -83,7 +83,7 @@ class _TableBookingPageState extends State<TableBookingPage> {
                   'tableNo': tableNo,
                   'name': name,
                   'village': village,
-                  'phoneNumber': phoneNumber,
+                  'mobileNo': phoneNumber,
                   'isApproved': false, // Initially not approved
                 });
 
