@@ -1,11 +1,25 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'AdminApprovalPage.dart'; // Import the AdminApprovalPage
+import 'AdminApprovalPage.dart';
+import 'AdminPage.dart'; // Import the AdminApprovalPage
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   final String userEmail;
 
   const HomePage({Key? key, required this.userEmail}) : super(key: key);
+
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  int _selectedIndex = 0;
+
+  static List<Widget> _widgetOptions = <Widget>[
+    HomePageContent(),
+    AdminTablePage(),
+    AdminApprovalPage(),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -28,103 +42,33 @@ class HomePage extends StatelessWidget {
           ),
         ],
       ),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Card(
-            elevation: 8.0,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15.0),
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                SizedBox(height: 20.0),
-                Image.asset(
-                  'assets/library_image.jpg',
-                  height: 150.0,
-                ),
-                SizedBox(height: 20.0),
-                Text(
-                  'Welcome to Sharada Library',
-                  style: TextStyle(
-                    fontSize: 24.0,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                SizedBox(height: 10.0),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                  child: Text(
-                    'Explore our vast collection of books and find the perfect spot to delve into your favorite reads.',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 16.0),
-                  ),
-                ),
-                SizedBox(height: 30.0),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.pushReplacementNamed(context, '/booking');
-                  },
-                  child: Text(
-                    'Book a Table',
-                    style: TextStyle(fontSize: 18.0),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(horizontal: 40.0, vertical: 15.0),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30.0),
-                    ),
-                  ),
-                ),
-                SizedBox(height: 20.0),
-                // Conditional rendering for admin
-                if (_isAdmin(userEmail))
-                  Column(
-                    children: [
-                      ElevatedButton(
-                        onPressed: () {
-                          Navigator.pushReplacementNamed(context, '/admin');
-                        },
-                        child: Text(
-                          'View/Update Table Info',
-                          style: TextStyle(fontSize: 18.0),
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30.0),
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 20.0),
-                      ElevatedButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => AdminApprovalPage()),
-                          );
-                        },
-                        child: Text(
-                          'Approve/Decline Requests',
-                          style: TextStyle(fontSize: 18.0),
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30.0),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-              ],
-            ),
+      body: _widgetOptions.elementAt(_selectedIndex),
+      bottomNavigationBar: BottomNavigationBar(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
           ),
-        ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.library_books),
+            label: 'Table Info',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.approval),
+            label: 'Approval',
+          ),
+        ],
+        currentIndex: _selectedIndex,
+        selectedItemColor: Colors.blue,
+        onTap: _onItemTapped,
       ),
     );
+  }
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
   }
 
   // Function to handle logout
@@ -140,21 +84,82 @@ class HomePage extends StatelessWidget {
       // Handle any errors that occur during logout
     }
   }
+}
 
-  // Function to check if the user is an admin
-  bool _isAdmin(String email) {
-    // Check if the email matches the admin email
-    if (email == 'libraryadmin@gmail.com') {
-      return true;
-    }
+class HomePageContent extends StatelessWidget {
+  const HomePageContent({Key? key}) : super(key: key);
 
-    // Check if the current user is signed in with Firebase
-    final currentUser = FirebaseAuth.instance.currentUser;
-    if (currentUser != null && (currentUser.email == 'libraryadmin@gmail.com' || currentUser.email == 'ghorpadesudheer@gmail.com')) {
-      return true;
-    }
-
-
-    return false;
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Card(
+          elevation: 8.0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15.0),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              SizedBox(height: 20.0),
+              Image.asset(
+                'assets/library_image.jpg',
+                height: 150.0,
+              ),
+              SizedBox(height: 20.0),
+              Text(
+                'Welcome to Sharada Library',
+                style: TextStyle(
+                  fontSize: 24.0,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(height: 10.0),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                child: Text(
+                  'Explore our vast collection of books and find the perfect spot to delve into your favorite reads.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 16.0),
+                ),
+              ),
+              SizedBox(height: 30.0),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pushReplacementNamed(context, '/booking');
+                },
+                child: Text(
+                  'Book a Table',
+                  style: TextStyle(fontSize: 18.0),
+                ),
+                style: ElevatedButton.styleFrom(
+                  padding: EdgeInsets.symmetric(horizontal: 40.0, vertical: 15.0),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30.0),
+                  ),
+                ),
+              ),
+              SizedBox(height: 20.0),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
+//
+// class AdminPage extends StatelessWidget {
+//   const AdminPage({Key? key}) : super(key: key);
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Center(
+//       child: Text(
+//         'View/Update Table Info',
+//         style: TextStyle(fontSize: 24.0),
+//       ),
+//     );
+//   }
+// }
