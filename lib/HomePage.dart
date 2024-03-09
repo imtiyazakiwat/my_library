@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'AdminApprovalPage.dart'; // Import the AdminApprovalPage
+import 'RenewalsPage.dart'; // Import the RenewalsPage
 
 class HomePage extends StatelessWidget {
   final String userEmail;
@@ -117,6 +118,25 @@ class HomePage extends StatelessWidget {
                           ),
                         ),
                       ),
+                      SizedBox(height: 20.0),
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => RenewalsPage()),
+                          );
+                        },
+                        child: Text(
+                          'Renewals',
+                          style: TextStyle(fontSize: 18.0),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30.0),
+                          ),
+                        ),
+                      ),
                     ],
                   ),
               ],
@@ -153,7 +173,6 @@ class HomePage extends StatelessWidget {
     if (currentUser != null && (currentUser.email == 'libraryadmin@gmail.com' || currentUser.email == 'ghorpadesudheer@gmail.com')) {
       return true;
     }
-
 
     return false;
   }

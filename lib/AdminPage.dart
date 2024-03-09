@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
+
 
 class AdminTablePage extends StatefulWidget {
   @override
@@ -50,6 +52,14 @@ class _AdminTablePageState extends State<AdminTablePage> {
             nameController.text = name;
             villageController.text = village;
             mobileNoController.text = mobileNo;
+
+            // Retrieve and parse selected date from Firestore
+            if (data.containsKey('selectedDate')) {
+              String? dateString = data['selectedDate'];
+              selectedDate = dateString != null ? DateTime.parse(dateString) : null;
+            } else {
+              selectedDate = null;
+            }
           } else {
             name = '';
             village = '';
@@ -57,6 +67,7 @@ class _AdminTablePageState extends State<AdminTablePage> {
             nameController.clear();
             villageController.clear();
             mobileNoController.clear();
+            selectedDate = null; // Reset selectedDate if not booked
           }
         });
       } else {
@@ -68,6 +79,7 @@ class _AdminTablePageState extends State<AdminTablePage> {
           nameController.clear();
           villageController.clear();
           mobileNoController.clear();
+          selectedDate = null; // Reset selectedDate if document does not exist
         });
       }
     }).catchError((error) {
@@ -232,10 +244,13 @@ class _AdminTablePageState extends State<AdminTablePage> {
                 },
               ),
               SizedBox(height: 10),
-              ElevatedButton(
-                onPressed: () => _selectDate(context),
-                child: Text(selectedDate != null ? 'Selected Date: ${selectedDate.toString()}' : 'Select Date'),
-              ),
+    ElevatedButton(
+    onPressed: () => _selectDate(context),
+    child: Text(selectedDate != null
+    ? 'Selected Date: ${DateFormat('d MMM yyyy').format(selectedDate!)}'
+        : 'Select Date'),
+    ),
+
               SizedBox(height: 20),
             ],
           ],

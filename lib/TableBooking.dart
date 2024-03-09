@@ -159,3 +159,4 @@ class _TableBookingPageState extends State<TableBookingPage> {
     );
   }
 }
+
