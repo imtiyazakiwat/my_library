@@ -17,10 +17,13 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '2.x' # or the version you're using
+          flutter-version: '2.x'
 
       - name: Get dependencies
         run: flutter pub get
 
       - name: Build APK
         run: flutter build apk --release
+
+      - name: Move APK to build directory
+        run: mv build/app/outputs/flutter-apk/app-release.apk build/generated-apk/app-release.apk
