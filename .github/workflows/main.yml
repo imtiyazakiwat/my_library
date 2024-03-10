@@ -20,11 +20,16 @@ jobs:
         with:
           channel: 'stable'
       - run: flutter pub get
+
+      - name: Get version from pubspec.yaml
+        id: get_version
+        run: echo ::set-output name=VERSION::$(grep -o 'version: .*' pubspec.yaml | awk '{print $2}')
+
       - run: flutter build apk --release --split-per-abi
 
       - name: Push to Releases
         uses: ncipollo/release-action@v1
         with:
           artifacts: "build/app/outputs/apk/release/*"
-          tag: v0.0.1
+          tag: v${{ steps.get_version.outputs.VERSION }}
           token: ${{ secrets.TOKEN }}
