@@ -62,7 +62,7 @@ We welcome contributions! To contribute to the project, follow these steps:
 
 This project is licensed under the [MIT License](LICENSE).
 
----
+
 
 Feel free to explore the codebase, customize, and enhance the Library Seat Booking App. For any issues or suggestions, please open an [issue](https://github.com/imtiyazakiwat/my_library/issues).
-```
+

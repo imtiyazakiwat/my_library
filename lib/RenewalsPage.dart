@@ -69,6 +69,16 @@ class _RenewalsPageState extends State<RenewalsPage> {
   }
 
   Widget _buildTableList() {
+    if (nearExpirationTables.isEmpty) {
+      // If there are no pending renewals
+      return Center(
+        child: Text(
+          'No pending renewals',
+          style: TextStyle(fontSize: 18.0),
+        ),
+      );
+    }
+
     return ListView.builder(
       itemCount: nearExpirationTables.length,
       itemBuilder: (context, index) {
@@ -83,7 +93,8 @@ class _RenewalsPageState extends State<RenewalsPage> {
         DateTime.parse(table['selectedDate'] as String);
         int daysRemaining = selectedDate
             .difference(currentDate)
-            .inDays + 1; // Adding 1 to include current day
+            .inDays +
+            1; // Adding 1 to include the current day
 
         return ListTile(
           title: Text('Table $tableNo'),
@@ -96,12 +107,19 @@ class _RenewalsPageState extends State<RenewalsPage> {
             ],
           ),
           trailing: ElevatedButton(
-            onPressed: () {
-              _renewTable(table.id);
+            onPressed: () async {
+              await _renewTable(table.id);
+              // Show a success message after successful renewal
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Table $tableNo renewed successfully!'),
+                  duration: Duration(seconds: 2),
+                ),
+              );
             },
             child: Text('Renew'),
           ),
-          tileColor: Colors.red, // Highlight table in red
+          tileColor: Colors.red, // Highlight the table in red
         );
       },
     );

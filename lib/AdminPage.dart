@@ -247,8 +247,8 @@ class _AdminTablePageState extends State<AdminTablePage> {
     ElevatedButton(
     onPressed: () => _selectDate(context),
     child: Text(selectedDate != null
-    ? 'Selected Date: ${DateFormat('d MMM yyyy').format(selectedDate!)}'
-        : 'Select Date'),
+    ? 'expires on: ${DateFormat('d MMM yyyy').format(selectedDate!)}'
+        : 'Select expiry Date'),
     ),
 
               SizedBox(height: 20),

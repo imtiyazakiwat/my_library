@@ -41,106 +41,126 @@ class HomePage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                SizedBox(height: 20.0),
-                Image.asset(
-                  'assets/library_image.jpg',
-                  height: 150.0,
-                ),
-                SizedBox(height: 20.0),
-                Text(
-                  'Welcome to Sharada Library',
-                  style: TextStyle(
-                    fontSize: 24.0,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                SizedBox(height: 10.0),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                  child: Text(
-                    'Explore our vast collection of books and find the perfect spot to delve into your favorite reads.',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 16.0),
-                  ),
-                ),
-                SizedBox(height: 30.0),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.pushReplacementNamed(context, '/booking');
-                  },
-                  child: Text(
-                    'Book a Table',
-                    style: TextStyle(fontSize: 18.0),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(horizontal: 40.0, vertical: 15.0),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30.0),
+                Expanded(
+                  child: SingleChildScrollView( // Wrap your content with SingleChildScrollView
+                    child: Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Card(
+                        elevation: 8.0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15.0),
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            SizedBox(height: 20.0),
+                            Image.asset(
+                              'assets/sharadhaLibImage.jpg',
+                              height: 150.0,
+                            ),
+                            SizedBox(height: 20.0),
+                            Text(
+                              'Welcome to Sharada Library',
+                              style: TextStyle(
+                                fontSize: 24.0,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            SizedBox(height: 10.0),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                              child: Text(
+                                'Discover Your Perfect Study Haven: Tables Ready for Your Books and Ideas at Sharadha Library.',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(fontSize: 16.0),
+                              ),
+                            ),
+                            SizedBox(height: 30.0),
+                            ElevatedButton(
+                              onPressed: () {
+                                Navigator.pushReplacementNamed(context, '/booking');
+                              },
+                              child: Text(
+                                'Book a Table',
+                                style: TextStyle(fontSize: 18.0),
+                              ),
+                              style: ElevatedButton.styleFrom(
+                                padding: EdgeInsets.symmetric(horizontal: 40.0, vertical: 15.0),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(30.0),
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 20.0),
+                            // Conditional rendering for admin
+                            if (_isAdmin(userEmail))
+                              Column(
+                                children: [
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      Navigator.pushReplacementNamed(context, '/admin');
+                                    },
+                                    child: Text(
+                                      'View/Update Table Info',
+                                      style: TextStyle(fontSize: 18.0),
+                                    ),
+                                    style: ElevatedButton.styleFrom(
+                                      padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(30.0),
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(height: 20.0),
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(builder: (context) => AdminApprovalPage()),
+                                      );
+                                    },
+                                    child: Text(
+                                      'Approve/Decline Requests',
+                                      style: TextStyle(fontSize: 18.0),
+                                    ),
+                                    style: ElevatedButton.styleFrom(
+                                      padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(30.0),
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(height: 20.0),
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(builder: (context) => RenewalsPage()),
+                                      );
+                                    },
+                                    child: Text(
+                                      'Renewals',
+                                      style: TextStyle(fontSize: 18.0),
+                                    ),
+                                    style: ElevatedButton.styleFrom(
+                                      padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(30.0),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                          ],
+                        ),
+                      ),
                     ),
                   ),
                 ),
-                SizedBox(height: 20.0),
-                // Conditional rendering for admin
-                if (_isAdmin(userEmail))
-                  Column(
-                    children: [
-                      ElevatedButton(
-                        onPressed: () {
-                          Navigator.pushReplacementNamed(context, '/admin');
-                        },
-                        child: Text(
-                          'View/Update Table Info',
-                          style: TextStyle(fontSize: 18.0),
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30.0),
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 20.0),
-                      ElevatedButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => AdminApprovalPage()),
-                          );
-                        },
-                        child: Text(
-                          'Approve/Decline Requests',
-                          style: TextStyle(fontSize: 18.0),
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30.0),
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 20.0),
-                      ElevatedButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => RenewalsPage()),
-                          );
-                        },
-                        child: Text(
-                          'Renewals',
-                          style: TextStyle(fontSize: 18.0),
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30.0),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
               ],
             ),
+
           ),
         ),
       ),

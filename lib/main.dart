@@ -2,10 +2,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:my_library/AdminPage.dart';
-import 'package:my_library/signup.dart';
+import 'AdminPage.dart';
+import 'signup.dart';
 import 'HomePage.dart';
-import 'package:my_library/TableBooking.dart' as TableBookingPage;
+import 'TableBooking.dart' as TableBookingPage;
 import 'firebase_options.dart';
 
 void main() async {
