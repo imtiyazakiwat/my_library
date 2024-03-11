@@ -64,6 +64,8 @@ flutter:
     - assets/logo.png
     - assets/library_image.jpg
     - assets/sharadhaLibImage.jpg
+    - web/icons/icons_192.png
+    - web/icons/icons_512.png
 
   uses-material-design: true
 
