@@ -1,4 +1,4 @@
-# Library Seat Booking App
+# My Library (Online Seat Booking App)
 
 Welcome to the Library Seat Booking App, a sophisticated solution to manage seat reservations in your library. This Flutter project provides an intuitive interface for clients to book seats online.
 
