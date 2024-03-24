@@ -8,6 +8,7 @@ class TableBookingPage extends StatefulWidget {
 
 class _TableBookingPageState extends State<TableBookingPage> {
   List<int> bookedTables = [];
+  List<int> nearExpirationTables = [];
   int selectedTable = -1;
 
   @override
@@ -29,9 +30,31 @@ class _TableBookingPageState extends State<TableBookingPage> {
             .map((doc) => doc['tableNo'] as int)
             .toList();
       });
+
+      // Fetch near expiration tables
+      await _fetchNearExpirationTables();
     } catch (error) {
       print('Error fetching booked tables: $error');
     }
+  }
+
+  Future<void> _fetchNearExpirationTables() async {
+    DateTime currentDate = DateTime.now();
+    QuerySnapshot tableSnapshot = await FirebaseFirestore.instance.collection('tables').get();
+
+    setState(() {
+      nearExpirationTables = tableSnapshot.docs.where((table) {
+        Map<String, dynamic> data = table.data() as Map<String, dynamic>;
+        if (data.containsKey('selectedDate') && data['selectedDate'] != null) {
+          DateTime selectedDate = DateTime.parse(data['selectedDate'] as String);
+          // Calculate the difference in days
+          int differenceInDays = selectedDate.difference(currentDate).inDays;
+          return differenceInDays < 0;
+        } else {
+          return false;
+        }
+      }).map((doc) => doc['tableNo'] as int).toList();
+    });
   }
 
   Future<void> bookTable(int tableNo) async {
@@ -133,10 +156,12 @@ class _TableBookingPageState extends State<TableBookingPage> {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10.0),
                 color: bookedTables.contains(index + 1)
-                    ? Colors.grey
+                    ? nearExpirationTables.contains(index + 1)
+                    ? Colors.red.withOpacity(0.5) // Expired tables
+                    : Colors.grey // Booked but not expired
                     : selectedTable == index + 1
-                    ? Colors.lightGreen.withOpacity(0.7)
-                    : Colors.green.withOpacity(0.3),
+                    ? Colors.lightGreen.withOpacity(0.7) // Selected
+                    : Colors.green.withOpacity(0.3), // Available
               ),
               child: Center(
                 child: Text(

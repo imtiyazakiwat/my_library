@@ -26,7 +26,7 @@ class _RenewalsPageState extends State<RenewalsPage> {
     setState(() {
       nearExpirationTables = tableSnapshot.docs.where((table) {
         Map<String, dynamic> data = table.data() as Map<String, dynamic>;
-        if (data.containsKey('selectedDate')) {
+        if (data.containsKey('selectedDate') && data['selectedDate'] != null) {
           DateTime selectedDate =
           DateTime.parse(data['selectedDate'] as String);
           // Calculate the difference in days
@@ -46,15 +46,20 @@ class _RenewalsPageState extends State<RenewalsPage> {
 
     // Get the current selected date
     DocumentSnapshot tableSnapshot = await tableRef.get();
-    DateTime? selectedDate = tableSnapshot.exists
-        ? DateTime.parse(tableSnapshot['selectedDate'])
-        : null;
+    String? selectedDateString = tableSnapshot.exists ? tableSnapshot['selectedDate'] as String? : null;
 
-    // If selected date exists, add a month to it
-    if (selectedDate != null) {
-      DateTime newSelectedDate = DateTime(selectedDate.year, selectedDate.month + 1, selectedDate.day);
-      await tableRef.update({'selectedDate': DateFormat('yyyy-MM-dd').format(newSelectedDate)});
-      _fetchNearExpirationTables(); // Refresh the table list
+    if(selectedDateString != null) {
+      DateTime? selectedDate = DateTime.tryParse(selectedDateString);
+
+      if(selectedDate != null) {
+        DateTime newSelectedDate = DateTime(selectedDate.year, selectedDate.month + 1, selectedDate.day);
+        await tableRef.update({'selectedDate': DateFormat('yyyy-MM-dd').format(newSelectedDate)});
+        _fetchNearExpirationTables(); // Refresh the table list
+      } else {
+        print('Failed to parse selected date');
+      }
+    } else {
+      print('Selected date is null');
     }
   }
 
